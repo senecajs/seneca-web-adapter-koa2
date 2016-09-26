@@ -54,6 +54,7 @@
     "test"
   ],
   "dependencies": {
-    "co-body": "^4.2.0"
+    "co-body": "^4.2.0",
+    "lodash": "^4.16.2"
   }
 }
