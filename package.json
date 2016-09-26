@@ -13,8 +13,8 @@
   "scripts": {
     "test": "lab -T node_modules/lab-babel -I __core-js_shared__,@@any-promise/REGISTRATION -v -L -t 80 -m 5000",
     "test-debug": "node --debug-brk=5858 node_modules/lab/bin/lab -T node_modules/lab-babel -I __core-js_shared__,@@any-promise/REGISTRATION -v -m 5000",
-    "coveralls": "lab -s -r lcov | coveralls",
-    "coverage": "lab -v -L -r html > docs/coverage.html"
+    "coveralls": "lab -T node_modules/lab-babel -s -r lcov | coveralls",
+    "coverage": "lab -T node_modules/lab-babel -v -L -r html > docs/coverage.html"
   },
   "files": [
     "LICENSE",
