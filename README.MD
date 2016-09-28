@@ -45,7 +45,7 @@ seneca.ready(() => {
 Most of the seneca-web documents refer to passing the application as the `context` parameter.
 Doing this with koa will result in unexpected explosions. Koa Router must be used. 
 
-[travis-badge]: https://travis-ci.org/tswaters/seneca-web-adapter-koa2.svg?branch=master
-[travis-url]: https://travis-ci.org/tswaters/seneca-web-adapter-koa2
-[coveralls-badge]: https://coveralls.io/repos/github/tswaters/seneca-web-adapter-koa2/badge.svg?branch=master
-[coveralls-url]: https://coveralls.io/github/tswaters/seneca-web-adapter-koa2?branch=master
+[travis-badge]: https://travis-ci.org/senecajs/seneca-web-adapter-koa2.svg?branch=master
+[travis-url]: https://travis-ci.org/senecajs/seneca-web-adapter-koa2
+[coveralls-badge]: https://coveralls.io/repos/github/senecajs/seneca-web-adapter-koa2/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/senecajs/seneca-web-adapter-koa2?branch=master
