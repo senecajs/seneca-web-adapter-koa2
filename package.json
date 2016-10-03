@@ -22,7 +22,7 @@
     "seneca-web-adapter-koa2.js"
   ],
   "peerDependencies": {
-    "seneca-web": "^1.0.0",
+    "seneca-web": "^1.0.0 || ^2.0.0",
     "koa": "^2.0.0"
   },
   "license": "ISC",
