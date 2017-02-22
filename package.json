@@ -1,7 +1,7 @@
 {
   "name": "seneca-web-adapter-koa2",
   "description": "seneca-web adapter for koa web framework (v2)",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "keywords": [
     "seneca",
     "web",
@@ -9,8 +9,11 @@
   ],
   "author": "Tyler Waters (https://github.com/tswaters)",
   "contributors": [],
-  "main": "seneca-web-adapter-koa2.js",
+  "main": "lib/seneca-web-adapter-koa2.js",
   "scripts": {
+    "clean": "rimraf lib",
+    "prepublish": "npm run clean && npm run build",
+    "build": "npm run clean && babel seneca-web-adapter-koa2.js -d lib",
     "test": "lab -T node_modules/lab-babel -I __core-js_shared__,@@any-promise/REGISTRATION -v -L -t 80 -m 5000",
     "test-debug": "node --debug-brk=5858 node_modules/lab/bin/lab -T node_modules/lab-babel -I __core-js_shared__,@@any-promise/REGISTRATION -v -m 5000",
     "coveralls": "lab -T node_modules/lab-babel -s -r lcov | coveralls",
@@ -27,6 +30,7 @@
   },
   "license": "ISC",
   "devDependencies": {
+    "babel-cli": "^6.23.0",
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-async-to-generator": "^6.8.0",
     "babel-preset-es2015-node5": "^1.2.0",
@@ -43,6 +47,7 @@
     "lab-babel": "^1.1.1",
     "pre-commit": "^1.1.3",
     "request": "^2.75.0",
+    "rimraf": "^2.6.0",
     "seneca": "plugin",
     "seneca-web": "^1.0.0"
   },
