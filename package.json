@@ -1,7 +1,7 @@
 {
   "name": "seneca-web-adapter-koa2",
   "description": "seneca-web adapter for koa web framework (v2)",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "keywords": [
     "seneca",
     "web",
@@ -22,7 +22,8 @@
   "files": [
     "LICENSE",
     "README.md",
-    "seneca-web-adapter-koa2.js"
+    "seneca-web-adapter-koa2.js",
+    "lib"
   ],
   "peerDependencies": {
     "seneca-web": "^1.0.0 || ^2.0.0",
