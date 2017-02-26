@@ -19,7 +19,7 @@ module.exports = function koa (options, context, auth, routes, done) {
           body = await Parse(ctx)
         }
 
-        const query = ctx.request.querystring
+        const query = Object.assign({}, ctx.request.query)
 
         const payload = {
           request$: ctx.request,
