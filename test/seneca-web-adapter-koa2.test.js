@@ -9,6 +9,7 @@ const Seneca = require('seneca')
 const Web = require('seneca-web')
 const Koa = require('koa')
 const Router = require('koa-router')
+const Adapter = require('../seneca-web-adapter-koa2')
 
 const expect = Code.expect
 const lab = exports.lab = Lab.script()
@@ -43,7 +44,7 @@ describe('koa', () => {
       }
     }
 
-    si.use(Web, {adapter: require('..'), context: Router()})
+    si.use(Web, {adapter: Adapter, context: Router()})
 
     si.act('role:web', config, (err, reply) => {
       if (err) return done(err)
@@ -75,7 +76,7 @@ describe('koa', () => {
       }
     }
 
-    si.use(Web, {adapter: require('..'), context: Router()})
+    si.use(Web, {adapter: Adapter, context: Router()})
 
     si.add('role:test,cmd:redirect', (msg, reply) => {
       reply(null, msg.args.body)
@@ -104,7 +105,7 @@ describe('koa', () => {
       }
     }
 
-    si.use(Web, {adapter: require('..'), context: Router()})
+    si.use(Web, {adapter: Adapter, context: Router()})
 
     si.add('role:test,cmd:echo', (msg, reply) => {
       reply(null, msg.args.body)
@@ -118,6 +119,36 @@ describe('koa', () => {
       Request.post('http://127.0.0.1:3000/echo', {json: {foo: 'bar'}}, (err, res, body) => {
         if (err) return done(err)
 
+        expect(body).to.be.equal({foo: 'bar'})
+        done()
+      })
+    })
+  })
+
+  it('put requests', (done) => {
+    var config = {
+      routes: {
+        pin: 'role:test,cmd:*',
+        map: {
+          echo: {PUT: true}
+        }
+      }
+    }
+
+    si.use(Web, {adapter: Adapter, context: Router()})
+
+    si.add('role:test,cmd:echo', (msg, reply) => {
+      console.log(msg.args.body)
+      reply(null, msg.args.body)
+    })
+
+    si.act('role:web', config, (err, reply) => {
+      if (err) return done(err)
+
+      app.use(si.export('web/context')().routes())
+
+      Request.put('http://127.0.0.1:3000/echo', {json: {foo: 'bar'}}, (err, res, body) => {
+        if (err) return done(err)
         expect(body).to.be.equal({foo: 'bar'})
         done()
       })
@@ -144,7 +175,7 @@ describe('koa', () => {
       }
     })
 
-    si.use(Web, {adapter: require('..'), context: Router()})
+    si.use(Web, {adapter: Adapter, context: Router()})
 
     si.add('role:test,cmd:error', (msg, reply) => {
       reply(new Error('aw snap!'))
