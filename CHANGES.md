@@ -1,3 +1,7 @@
+## 1.0.5 2017-02-25
+
+* Querystring now parsed properly as JSON.
+
 ## 1.0.4 2017-02-25
 
 * Body parser now runs on PUT requests
