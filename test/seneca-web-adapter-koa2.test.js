@@ -10,7 +10,7 @@ const Web = require('seneca-web')
 const Koa = require('koa')
 const Router = require('koa-router')
 const Adapter = require('../seneca-web-adapter-koa2')
-const Parse = require('co-body')
+const BodyParser = require('koa-bodyparser')
 
 const expect = Code.expect
 const lab = exports.lab = Lab.script()
@@ -179,11 +179,7 @@ describe('koa', () => {
     si.act('role:web', config, (err, reply) => {
       if (err) return done(err)
 
-      app.use(async (ctx, next) => {
-        ctx.request.body = await Parse(ctx)
-        await next()
-      })
-
+      app.use(BodyParser())
       app.use(si.export('web/context')().routes())
 
       Request.post('http://127.0.0.1:3000/echo', {json: {foo: 'bar'}}, (err, res, body) => {
@@ -246,11 +242,7 @@ describe('koa', () => {
     si.act('role:web', config, (err, reply) => {
       if (err) return done(err)
 
-      app.use(async (ctx, next) => {
-        ctx.request.body = await Parse(ctx)
-        await next()
-      })
-
+      app.use(BodyParser())
       app.use(si.export('web/context')().routes())
 
       Request.put('http://127.0.0.1:3000/echo', {json: {foo: 'bar'}}, (err, res, body) => {
