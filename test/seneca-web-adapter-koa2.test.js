@@ -10,6 +10,7 @@ const Web = require('seneca-web')
 const Koa = require('koa')
 const Router = require('koa-router')
 const Adapter = require('../seneca-web-adapter-koa2')
+const BodyParser = require('koa-bodyparser')
 
 const expect = Code.expect
 const lab = exports.lab = Lab.script()
@@ -156,6 +157,40 @@ describe('koa', () => {
     })
   })
 
+  it('post requests - no body parser', (done) => {
+    var config = {
+      routes: {
+        pin: 'role:test,cmd:*',
+        map: {
+          echo: {POST: true}
+        }
+      },
+      options: {
+        parseBody: false
+      }
+    }
+
+    si.use(Web, {adapter: Adapter, context: Router()})
+
+    si.add('role:test,cmd:echo', (msg, reply) => {
+      reply(null, msg.args.body)
+    })
+
+    si.act('role:web', config, (err, reply) => {
+      if (err) return done(err)
+
+      app.use(BodyParser())
+      app.use(si.export('web/context')().routes())
+
+      Request.post('http://127.0.0.1:3000/echo', {json: {foo: 'bar'}}, (err, res, body) => {
+        if (err) return done(err)
+
+        expect(body).to.be.equal({foo: 'bar'})
+        done()
+      })
+    })
+  })
+
   it('put requests', (done) => {
     var config = {
       routes: {
@@ -175,6 +210,39 @@ describe('koa', () => {
     si.act('role:web', config, (err, reply) => {
       if (err) return done(err)
 
+      app.use(si.export('web/context')().routes())
+
+      Request.put('http://127.0.0.1:3000/echo', {json: {foo: 'bar'}}, (err, res, body) => {
+        if (err) return done(err)
+        expect(body).to.be.equal({foo: 'bar'})
+        done()
+      })
+    })
+  })
+
+  it('put requests - no body parser', (done) => {
+    var config = {
+      routes: {
+        pin: 'role:test,cmd:*',
+        map: {
+          echo: {PUT: true}
+        }
+      },
+      options: {
+        parseBody: false
+      }
+    }
+
+    si.use(Web, {adapter: Adapter, context: Router()})
+
+    si.add('role:test,cmd:echo', (msg, reply) => {
+      reply(null, msg.args.body)
+    })
+
+    si.act('role:web', config, (err, reply) => {
+      if (err) return done(err)
+
+      app.use(BodyParser())
       app.use(si.export('web/context')().routes())
 
       Request.put('http://127.0.0.1:3000/echo', {json: {foo: 'bar'}}, (err, res, body) => {

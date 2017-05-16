@@ -9,15 +9,15 @@
   ],
   "author": "Tyler Waters (https://github.com/tswaters)",
   "contributors": [],
-  "main": "lib/seneca-web-adapter-koa2.js",
+  "main": "seneca-web-adapter-koa2.js",
+  "engines": {
+    "node": ">=7"
+  },
   "scripts": {
-    "clean": "rimraf lib",
-    "prepublish": "npm run clean && npm run build",
-    "build": "npm run clean && babel seneca-web-adapter-koa2.js -d lib",
-    "test": "lab -T node_modules/lab-babel -I __core-js_shared__,@@any-promise/REGISTRATION -v -L -t 80 -m 5000",
-    "test-debug": "node --debug-brk=5858 node_modules/lab/bin/lab -T node_modules/lab-babel -I __core-js_shared__,@@any-promise/REGISTRATION -v -m 5000",
-    "coveralls": "lab -T node_modules/lab-babel -s -r lcov | coveralls",
-    "coverage": "lab -T node_modules/lab-babel -v -L -r html > docs/coverage.html"
+    "test": "lab -I @@any-promise/REGISTRATION -v -L -t 80 -m 5000",
+    "test-debug": "node --debug-brk=5858 node_modules/lab/bin/lab @@any-promise/REGISTRATION -v -m 5000",
+    "coveralls": "lab -s -r lcov | coveralls",
+    "coverage": "lab -v -L -r html > docs/coverage.html"
   },
   "files": [
     "LICENSE",
@@ -27,25 +27,19 @@
   ],
   "peerDependencies": {
     "seneca-web": "^1.0.0 || ^2.0.0",
-    "koa": "^2.0.0"
+    "koa": ">=2"
   },
   "license": "ISC",
   "devDependencies": {
-    "babel-cli": "^6.23.0",
-    "babel-plugin-syntax-async-functions": "^6.13.0",
-    "babel-plugin-transform-async-to-generator": "^6.8.0",
-    "babel-preset-es2015-node5": "^1.2.0",
-    "babel-preset-stage-0": "^6.5.0",
-    "babel-register": "^6.14.0",
     "code": "^4.0.0",
     "coveralls": "^2.11.14",
     "eslint-config-seneca": "^3.0.0",
     "eslint-plugin-hapi": "^4.0.0",
     "eslint-plugin-standard": "^2.0.0",
-    "koa": "^2.0.0",
+    "koa": "^2.2.0",
+    "koa-bodyparser": "^4.2.0",
     "koa-router": "^7.0.1",
-    "lab": "^11.0.1",
-    "lab-babel": "^1.1.1",
+    "lab": "^13.0.4",
     "pre-commit": "^1.1.3",
     "request": "^2.75.0",
     "rimraf": "^2.6.0",

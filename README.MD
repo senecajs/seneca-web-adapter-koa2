@@ -3,6 +3,9 @@
 [![Build Status][travis-badge]][travis-url]
 [![Coverage Status][coveralls-badge]][coveralls-url]
 
+- __Node:__ 7.x
+- __Seneca:__ 1.x - 3.x
+
 This is an adapter for [seneca-web](https://github.com/senecajs/seneca-web/) using koa/koa-routes.
 
 ## Installation
