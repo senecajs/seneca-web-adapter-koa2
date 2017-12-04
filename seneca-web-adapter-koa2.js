@@ -28,7 +28,9 @@ module.exports = function koa (options, context, auth, routes, done) {
         let body = {}
 
         if (['POST', 'PUT'].indexOf(ctx.req.method) > -1) {
-          body = await Parse(ctx)
+          body = options.parseBody === false
+            ? ctx.request.body
+            : await Parse(ctx)
         }
 
         const query = Object.assign({}, ctx.request.query)
