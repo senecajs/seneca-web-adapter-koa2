@@ -34,11 +34,12 @@ module.exports = function koa (options, context, auth, routes, done) {
         }
 
         const query = Object.assign({}, ctx.request.query)
+        const params = ctx.params
 
         const payload = {
           request$: ctx.request,
           response$: ctx.response,
-          args: {body, query}
+          args: {body, query, params}
         }
 
         ctx.response.type = 'json'
