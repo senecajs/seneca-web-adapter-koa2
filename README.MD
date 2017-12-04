@@ -47,10 +47,19 @@ seneca.ready(() => {
 })
 ```
 
-## Note
+### Note
 
 Most of the seneca-web documents refer to passing the application as the `context` parameter.
 Doing this with koa will result in unexpected explosions. Koa Router must be used. 
+
+
+## Contributing
+The [Senecajs org][] encourage open participation. If you feel you can help in any way,
+be it with documentation, examples, extra testing, or new features please get in touch.
+
+## License
+Copyright (c) 2016-2017, Tyler Waters.
+Licensed under [MIT][].
 
 [Logo]: http://senecajs.org/files/assets/seneca-logo.png
 [npm-badge]: https://badge.fury.io/js/seneca-web-adapter-koa2.svg
@@ -61,3 +70,5 @@ Doing this with koa will result in unexpected explosions. Koa Router must be use
 [coveralls-url]: https://coveralls.io/github/senecajs/seneca-web-adapter-koa2?branch=master
 [david-badge]: https://david-dm.org/senecajs/seneca-web-adapter-koa2.svg
 [david-url]: https://david-dm.org/senecajs/seneca-web-adapter-koa2
+[Senecajs org]: https://github.com/senecajs/
+[MIT]: ./LICENSE
