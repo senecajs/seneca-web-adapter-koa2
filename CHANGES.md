@@ -1,3 +1,9 @@
+## 1.1.0 2017-12-03
+
+* Adds support for middleware (#19)
+* Adds payload to seneca payload (#18)
+* Respect parseBody option from seneca-web (#15)
+
 ## 1.0.5 2017-02-25
 
 * Querystring now parsed properly as JSON.
