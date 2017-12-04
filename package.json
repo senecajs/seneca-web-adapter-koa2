@@ -60,7 +60,7 @@
     "test"
   ],
   "dependencies": {
-    "co-body": "^4.2.0",
+    "co-body": "^5.1.1",
     "lodash": "^4.16.2"
   }
 }
