@@ -50,7 +50,7 @@
     "request": "^2.75.0",
     "rimraf": "^2.6.0",
     "seneca": "plugin",
-    "seneca-web": "^1.0.0"
+    "seneca-web": "^2.2.0"
   },
   "repository": {
     "type": "git",
