@@ -24,7 +24,7 @@ module.exports = function koa (options, context, auth, routes, done) {
       return ret
     })
     _.each(route.methods, method => {
-      context[method.toLowerCase()].apply(context, [route.path].concat(routeMiddleware).concat([async (ctx, next) => {
+      context[method.toLowerCase()](route.path, ...routeMiddleware, async (ctx, next) => {
         let body = {}
 
         if (['POST', 'PUT'].indexOf(ctx.req.method) > -1) {
@@ -59,7 +59,7 @@ module.exports = function koa (options, context, auth, routes, done) {
             return resolve()
           })
         })
-      }]))
+      })
     })
   })
 
