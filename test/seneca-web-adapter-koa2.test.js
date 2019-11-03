@@ -1,7 +1,6 @@
 'use strict'
 
-const Code = require('code')
-const Lab = require('lab')
+const Assert = require('assert')
 const Request = require('request')
 const Seneca = require('seneca')
 const Web = require('seneca-web')
@@ -10,20 +9,13 @@ const Router = require('koa-router')
 const Adapter = require('../seneca-web-adapter-koa2')
 const Parse = require('co-body')
 
-const expect = Code.expect
-const lab = (exports.lab = Lab.script())
-const describe = lab.describe
-const beforeEach = lab.beforeEach
-const afterEach = lab.afterEach
-const it = lab.it
-
 describe('koa', () => {
   let si = null
   let app = null
   let server = null
 
   const middleware = {
-    head: async function(ctx, next) {
+    head: async (ctx, next) => {
       ctx.type = 'application/json'
       ctx.status = 200
       await next()
@@ -56,7 +48,7 @@ describe('koa', () => {
       }
     }
 
-    si.act('role:web', config, (err) => {
+    si.act('role:web', config, err => {
       if (err) return done(err)
 
       si.add('role:test,cmd:ping', (msg, reply) => {
@@ -74,7 +66,7 @@ describe('koa', () => {
 
         body = JSON.parse(body)
 
-        expect(body).to.be.equal({ res: 'pong!' })
+        Assert.deepEqual(body, { res: 'pong!' })
         done()
       })
     })
@@ -94,7 +86,7 @@ describe('koa', () => {
       reply(null, msg.args.body)
     })
 
-    si.act('role:web', config, (err) => {
+    si.act('role:web', config, err => {
       if (err) return done(err)
 
       app.use(
@@ -108,7 +100,7 @@ describe('koa', () => {
         { json: { foo: 'bar' } },
         (err, res) => {
           if (err) return done(err)
-          expect(res.headers.location).to.be.equal('/')
+          Assert.equal(res.headers.location, '/')
           done()
         }
       )
@@ -129,7 +121,7 @@ describe('koa', () => {
       reply(null, msg.args.query)
     })
 
-    si.act('role:web', config, (err) => {
+    si.act('role:web', config, err => {
       if (err) return done(err)
 
       app.use(
@@ -145,7 +137,7 @@ describe('koa', () => {
         },
         (err, res, body) => {
           if (err) return done(err)
-          expect(body).to.be.equal({ foo: 'bar' })
+          Assert.deepEqual(body, { foo: 'bar' })
           done()
         }
       )
@@ -169,7 +161,7 @@ describe('koa', () => {
       reply(null, msg.args.params)
     })
 
-    si.act('role:web', config, (err) => {
+    si.act('role:web', config, err => {
       if (err) return done(err)
 
       app.use(
@@ -185,7 +177,7 @@ describe('koa', () => {
         },
         (err, res, body) => {
           if (err) return done(err)
-          expect(body).to.be.equal({ foo: 'bar' })
+          Assert.deepEqual(body, { foo: 'bar' })
           done()
         }
       )
@@ -206,7 +198,7 @@ describe('koa', () => {
       reply(null, msg.args.body)
     })
 
-    si.act('role:web', config, (err) => {
+    si.act('role:web', config, err => {
       if (err) return done(err)
 
       app.use(
@@ -221,7 +213,7 @@ describe('koa', () => {
         (err, res, body) => {
           if (err) return done(err)
 
-          expect(body).to.be.equal({ foo: 'bar' })
+          Assert.deepEqual(body, { foo: 'bar' })
           done()
         }
       )
@@ -247,7 +239,7 @@ describe('koa', () => {
       reply(null, msg.args.body)
     })
 
-    si.act('role:web', config, (err) => {
+    si.act('role:web', config, err => {
       if (err) return done(err)
 
       app.use(async (ctx, next) => {
@@ -267,7 +259,7 @@ describe('koa', () => {
         (err, res, body) => {
           if (err) return done(err)
 
-          expect(body).to.be.equal({ foo: 'bar' })
+          Assert.deepEqual(body, { foo: 'bar' })
           done()
         }
       )
@@ -288,7 +280,7 @@ describe('koa', () => {
       reply(null, msg.args.body)
     })
 
-    si.act('role:web', config, (err) => {
+    si.act('role:web', config, err => {
       if (err) return done(err)
 
       app.use(
@@ -302,7 +294,7 @@ describe('koa', () => {
         { json: { foo: 'bar' } },
         (err, res, body) => {
           if (err) return done(err)
-          expect(body).to.be.equal({ foo: 'bar' })
+          Assert.deepEqual(body, { foo: 'bar' })
           done()
         }
       )
@@ -328,7 +320,7 @@ describe('koa', () => {
       reply(null, msg.args.body)
     })
 
-    si.act('role:web', config, (err) => {
+    si.act('role:web', config, err => {
       if (err) return done(err)
 
       app.use(async (ctx, next) => {
@@ -347,7 +339,7 @@ describe('koa', () => {
         { json: { foo: 'bar' } },
         (err, res, body) => {
           if (err) return done(err)
-          expect(body).to.be.equal({ foo: 'bar' })
+          Assert.deepEqual(body, { foo: 'bar' })
           done()
         }
       )
@@ -377,7 +369,7 @@ describe('koa', () => {
       reply(new Error('aw snap!'))
     })
 
-    si.act('role:web', config, (err) => {
+    si.act('role:web', config, err => {
       if (err) return done(err)
 
       app.use(
@@ -389,32 +381,14 @@ describe('koa', () => {
       Request.get('http://127.0.0.1:3000/error', (err, res, body) => {
         if (err) return done(err)
 
-        expect(res.statusCode).to.equal(400)
-        expect(body).to.be.equal('aw snap!')
+        Assert.equal(res.statusCode, 400)
+        Assert.equal(body, 'aw snap!')
         done()
       })
     })
   })
 
   describe('middleware', () => {
-    it('blows up on invalid middleware input', done => {
-      var config = {
-        routes: {
-          pin: 'role:test,cmd:*',
-          middleware: ['total not valid'],
-          map: {
-            ping: true
-          }
-        }
-      }
-      si.act('role:web', config, (err) => {
-        expect(err.details.message).to.equal(
-          'expected valid middleware, got total not valid'
-        )
-        done()
-      })
-    })
-
     it('should call middleware routes properly - passing as strings', done => {
       var config = {
         routes: {
@@ -430,7 +404,7 @@ describe('koa', () => {
         reply(null, { res: 'ping!' })
       })
 
-      si.act('role:web', config, (err) => {
+      si.act('role:web', config, err => {
         if (err) return done(err)
 
         app.use(
@@ -442,8 +416,8 @@ describe('koa', () => {
         Request('http://127.0.0.1:3000/ping', (err, res, body) => {
           if (err) return done(err)
           body = JSON.parse(body)
-          expect(res.statusCode).to.equal(200)
-          expect(body).to.be.equal({ success: true })
+          Assert.equal(res.statusCode, 200)
+          Assert.deepEqual(body, { success: true })
           done()
         })
       })
@@ -476,7 +450,7 @@ describe('koa', () => {
         this.prior(msg, cb)
       })
 
-      si.act('role:web', config, (err) => {
+      si.act('role:web', config, err => {
         if (err) return done(err)
 
         app.use(
@@ -488,8 +462,8 @@ describe('koa', () => {
         Request('http://127.0.0.1:3000/ping', (err, res, body) => {
           if (err) return done(err)
           body = JSON.parse(body)
-          expect(res.statusCode).to.equal(200)
-          expect(body).to.be.equal({ success: true })
+          Assert.equal(res.statusCode, 200)
+          Assert.deepEqual(body, { success: true })
           done()
         })
       })
