@@ -44,7 +44,6 @@
     "@babel/preset-env": "^7.6.3",
     "@babel/register": "^7.6.2",
     "babel-eslint": "^10.0.3",
-    "co-body": "^6.0.0",
     "coveralls": "^3.0.7",
     "eslint": "^6.6.0",
     "koa": "^2.11.0",
@@ -65,7 +64,9 @@
   "pre-commit": [
     "test"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "co-body": "^6.0.0"
+  },
   "babel": {
     "presets": [
       [
