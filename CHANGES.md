@@ -1,3 +1,8 @@
+## 1.2.0 2019-11-02
+
+- Update dependencies (remove lodash)
+- Pass state with seneca action (thanks @zsirfs)
+
 ## 1.1.0 2017-12-03
 
 - Adds support for middleware (#19)
