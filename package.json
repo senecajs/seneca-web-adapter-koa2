@@ -8,7 +8,13 @@
     "plugin"
   ],
   "author": "Tyler Waters (https://github.com/tswaters)",
-  "contributors": [],
+  "contributors": [
+    {
+      "name": "zsir",
+      "email": "zsirfs@zswfx.com",
+      "url": "https://zswfx.com"
+    }
+  ],
   "main": "lib/seneca-web-adapter-koa2.js",
   "scripts": {
     "build": "npm run clean && babel seneca-web-adapter-koa2.js -d lib",

@@ -37,7 +37,8 @@ module.exports = function koa(
                 args: {
                   body,
                   query: { ...ctx.request.query },
-                  params: { ...ctx.params }
+                  params: { ...ctx.params },
+                  state: { ...ctx.state }
                 }
               },
               (err, res) => (err ? reject(err) : resolve(res))
