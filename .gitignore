@@ -9,3 +9,4 @@ coverage.html
 node_modules
 lib
 docs/annotated
+package-lock.json
