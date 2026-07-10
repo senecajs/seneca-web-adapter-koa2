@@ -45,7 +45,7 @@
     "@babel/register": "^7.6.2",
     "babel-eslint": "^10.0.3",
     "coveralls": "^3.0.7",
-    "eslint": "^6.6.0",
+    "eslint": "^10.6.0",
     "koa": "^2.11.0",
     "koa-router": "^7.4.0",
     "mocha": "^6.2.2",
@@ -54,7 +54,7 @@
     "prettier": "^1.18.2",
     "request": "^2.88.0",
     "rimraf": "^3.0.0",
-    "seneca": "^3.17.0",
+    "seneca": "^3.38.0",
     "seneca-web": "^2.2.1"
   },
   "repository": {
