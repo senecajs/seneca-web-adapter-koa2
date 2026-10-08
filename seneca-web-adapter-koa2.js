@@ -9,7 +9,14 @@ module.exports = function koa(
   routes,
   done
 ) {
-  const seneca = this
+  // seneca-web (2.2.2) calls the adapter from inside an action (init:web
+  // when the routes come from the plugin options), so `this` can be a
+  // delegate with fixed arguments, in particular fatal$:true during plugin
+  // initialization. Messages sent from it would inherit them and turn
+  // every action error into a fatal error that closes the process.
+  // Requests are therefore sent from the root instance, whichever
+  // instance seneca-web passes, and each one is its own transaction.
+  const seneca = this.root || this
 
   if (!context) {
     return done(new Error('no context provided'))
