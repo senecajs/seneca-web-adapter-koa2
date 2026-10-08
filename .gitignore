@@ -5,8 +5,8 @@
 *~
 *.log
 coverage.html
+coverage
+.nyc_output
 
 node_modules
-lib
 docs/annotated
-package-lock.json
