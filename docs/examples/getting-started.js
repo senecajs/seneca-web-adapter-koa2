@@ -1,6 +1,6 @@
 // Tutorial: Getting started. Run with: node docs/examples/getting-started.js
 const Seneca = require('seneca')
-const SenecaWeb = require('seneca-web')
+const SenecaWeb = require('@seneca/web')
 const Koa = require('koa')
 const Router = require('@koa/router')
 
@@ -44,7 +44,7 @@ async function main() {
     // The adapter registers the routes on this router.
     const router = new Router()
     seneca.use(SenecaWeb, { adapter: Adapter, context: router, routes })
-    await ready(seneca)
+    await seneca.ready()
 
     const app = new Koa()
     app.use(router.routes())
@@ -75,13 +75,6 @@ async function main() {
     if (server) server.close()
     await new Promise(resolve => seneca.close(resolve))
   }
-}
-
-// Callback form of ready: it also works on Seneca 3 and on 4.0.0-rc5.
-function ready(seneca) {
-  return new Promise((resolve, reject) =>
-    seneca.ready(err => (err ? reject(err) : resolve()))
-  )
 }
 
 main().catch(err => {

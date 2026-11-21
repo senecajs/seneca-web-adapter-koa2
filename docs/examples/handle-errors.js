@@ -1,7 +1,7 @@
 // How-to: Handle action errors and status codes.
 // Run with: node docs/examples/handle-errors.js
 const Seneca = require('seneca')
-const SenecaWeb = require('seneca-web')
+const SenecaWeb = require('@seneca/web')
 const Koa = require('koa')
 const Router = require('@koa/router')
 
@@ -52,7 +52,7 @@ async function main() {
         }
       }
     })
-    await ready(seneca)
+    await seneca.ready()
 
     const app = new Koa()
 
@@ -61,13 +61,11 @@ async function main() {
       try {
         await next()
       } catch (err) {
-        // Seneca 3 wraps action errors (the original is err.orig);
-        // Seneca 4 delivers the original error object.
-        const cause = err.orig || err
-        ctx.status = STATUS[cause.code] || 500
+        // Seneca 4 delivers the action's error object unchanged.
+        ctx.status = STATUS[err.code] || 500
         ctx.body = {
-          error: 500 === ctx.status ? 'internal error' : cause.message,
-          code: cause.code || null
+          error: 500 === ctx.status ? 'internal error' : err.message,
+          code: err.code || null
         }
       }
     })
@@ -93,12 +91,6 @@ async function main() {
     if (server) server.close()
     await new Promise(resolve => seneca.close(resolve))
   }
-}
-
-function ready(seneca) {
-  return new Promise((resolve, reject) =>
-    seneca.ready(err => (err ? reject(err) : resolve()))
-  )
 }
 
 main().catch(err => {

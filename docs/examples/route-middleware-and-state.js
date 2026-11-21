@@ -1,7 +1,7 @@
 // How-to: Add middleware per route, pass Koa state to actions.
 // Run with: node docs/examples/route-middleware-and-state.js
 const Seneca = require('seneca')
-const SenecaWeb = require('seneca-web')
+const SenecaWeb = require('@seneca/web')
 const Koa = require('koa')
 const Router = require('@koa/router')
 
@@ -66,7 +66,7 @@ async function main() {
         }
       }
     })
-    await ready(seneca)
+    await seneca.ready()
 
     const app = new Koa()
     app.use(router.routes())
@@ -103,12 +103,6 @@ async function main() {
     if (server) server.close()
     await new Promise(resolve => seneca.close(resolve))
   }
-}
-
-function ready(seneca) {
-  return new Promise((resolve, reject) =>
-    seneca.ready(err => (err ? reject(err) : resolve()))
-  )
 }
 
 main().catch(err => {

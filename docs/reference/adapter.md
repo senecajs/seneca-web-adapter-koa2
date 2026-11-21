@@ -1,8 +1,9 @@
 # Adapter reference
 
-The module exports one function: the adapter that seneca-web calls to
-register routes. You do not call it yourself; you pass it to seneca-web
-as the `adapter` option, and seneca-web calls it once per route mapping
+The module exports one function: the adapter that `@seneca/web` calls
+to register routes. You do not call it yourself; you pass it to
+`@seneca/web` as the `adapter` option, and the plugin calls it once per
+route mapping
 (at plugin initialization for the `routes` option, and for every
 `role:web,routes:*` message).
 
@@ -18,21 +19,21 @@ seneca.use(SenecaWeb, { adapter: Adapter, context: router, routes })
 function koa(options, context, auth, routes, done)
 ```
 
-| Argument | What seneca-web passes | Used for |
-| -------- | ---------------------- | -------- |
-| `this` | A Seneca instance chosen by seneca-web. seneca-web 2.2.2 passes the instance of the action that maps the routes: the `init:web` action during plugin initialization, or the `role:web` action. | Finding the root instance (`this.root`), which sends the request messages. |
+| Argument | What `@seneca/web` passes | Used for |
+| -------- | ------------------------- | -------- |
+| `this` | A Seneca instance chosen by the plugin. `@seneca/web` 3.0.0 passes a delegate of the root instance without fixed arguments; seneca-web 2.2.2 and earlier passed the instance of the action that maps the routes: the `init:web` action during plugin initialization, or the `role:web` action. | Finding the root instance (`this.root`), which sends the request messages. |
 | `options` | The plugin's `options` (default `{ parseBody: true }`, with `middleware` added when that option is given), or the `options` property of the `role:web` message when present. | `parseBody` and `middleware`; other properties are ignored. |
 | `context` | The plugin's `context` option, or the `context` property of the message. | The Koa router to register routes on. Required. |
 | `auth` | The plugin's `auth` option, or the `auth` property of the message. | Not used. |
-| `routes` | The list of routes built from the route map by seneca-web's mapper. | One route per map key; see [Route registration](#route-registration). |
+| `routes` | The list of routes built from the route map by the plugin's mapper. | One route per map key; see [Route registration](#route-registration). |
 | `done` | A callback `(err, result)`. | Called once, synchronously: with `{ routes }` when the routes are registered, or with an error when there is no context. An exception thrown while registering (see [Failure modes](#failure-modes)) propagates instead, and Seneca turns it into the error reply. |
 
 The adapter has no options of its own; everything is configured through
-seneca-web (see [Options](options.md)).
+`@seneca/web` (see [Options](options.md)).
 
 ## Route registration
 
-Each route in `routes` is an object produced by seneca-web. The adapter
+Each route in `routes` is an object produced by `@seneca/web`. The adapter
 reads these properties:
 
 | Property | Type | Effect |
@@ -147,9 +148,7 @@ When the routes come from the plugin options, any of these failures is
 a plugin initialization failure, which Seneca treats as fatal: it logs
 fatal entries, calls the error handler if one is set, never calls the
 `ready` callback, and terminates the process with exit code 2 once its
-`death_delay` (11111 milliseconds by default) has passed. Seneca
-4.0.0-rc5 prints `EXIT [ 2 ]` with a stack trace instead of exiting,
-and the process keeps running without a ready instance.
+`death_delay` (11111 milliseconds by default) has passed.
 
 Errors at request time (parser errors, action errors, `act_not_found`)
 are not registration failures; they are thrown into Koa's middleware

@@ -1,6 +1,8 @@
 # How the adapter works
 
-This page explains the design of the adapter: what seneca-web leaves to
+This page explains the design of the adapter: what `@seneca/web` (the
+plugin from the seneca-web repository, published as `seneca-web` up to
+2.2.2) leaves to
 an adapter, how this one maps that onto Koa, and the decisions and
 limits that follow.
 
@@ -65,7 +67,7 @@ The live objects are `request$` and `response$`, the Koa request and
 response. They give actions full access when they need it, for
 instance to read headers or to write a response themselves. The `$`
 suffix marks them as Seneca directives rather than message data, and
-seneca-transport drops such properties when it sends a message to
+`@seneca/transport` drops such properties when it sends a message to
 another process. An action therefore sees the same `args` wherever it
 runs; it only has to avoid depending on `request$` when it might run
 elsewhere.
@@ -93,27 +95,29 @@ application errors to HTTP statuses belongs to the application, and
 Koa already has a place for it: error middleware. The adapter's only
 promise is to pass the error object through unchanged, so that
 `err.code` and `err.details` set by the action are available there.
-Seneca 3 and Seneca 4 differ in what that object is; see
-[Seneca 3 and Seneca 4](seneca-3-and-4.md).
+On Seneca 4 that object is the action's own error; Seneca 3 wrapped it.
+See [Seneca 3 and Seneca 4](seneca-3-and-4.md).
 
 ## Which Seneca instance sends the message
 
-seneca-web 2.2.2 calls the adapter from inside an action: `init:web`
-when the routes come from the plugin options, or `role:web,routes:*`.
-The instance it passes as `this` is therefore an action delegate, and a
-delegate carries fixed arguments that are added to every message it
-sends. For `init:web` those include `fatal$: true`, because plugin
-initialization messages are fatal by design: if initialization fails,
-the process should not continue.
+seneca-web 2.2.2 and earlier called the adapter from inside an action:
+`init:web` when the routes come from the plugin options, or
+`role:web,routes:*`. The instance it passed as `this` was therefore an
+action delegate, and a delegate carries fixed arguments that are added
+to every message it sends. For `init:web` those include `fatal$: true`,
+because plugin initialization messages are fatal by design: if
+initialization fails, the process should not continue.
 
-Before version 1.3.0 the adapter sent the request messages from that
+Before version 2.0.0 the adapter sent the request messages from that
 delegate, so every message for a route configured through the plugin
 options was fatal: an action replying with an error closed the Seneca
-instance and exited the process. Since 1.3.0 the adapter sends the
+instance and exited the process. Since 2.0.0 the adapter sends the
 messages from the root instance (`this.root`). Each request becomes
 its own transaction with no inherited arguments, and an action error
-is an ordinary error that reaches Koa. This holds whichever instance
-seneca-web passes to the adapter. One consequence: fixed arguments of a
+is an ordinary error that reaches Koa. `@seneca/web` 3.0.0 calls
+adapters with a delegate of the root instance without fixed arguments,
+but the adapter does not rely on it: the fix holds whichever instance
+the plugin passes. One consequence: fixed arguments of a
 delegate that mapped the routes (for example
 `seneca.delegate({ zone: 'web' }).act('role:web', ...)`) are no longer
 added to the request messages; put such values in the route's pattern
@@ -122,11 +126,11 @@ or in middleware instead. The details are in
 
 ## Limits
 
-* seneca-web keeps the current context, adapter and options in module
+* `@seneca/web` keeps the current context, adapter and options in module
   level variables shared by all Seneca instances in a process, and
   merges the options of every `use()` into them, so a later instance
   also maps the routes given to an earlier one. Several instances with
-  seneca-web in one process should map their routes with `role:web`
+  `@seneca/web` in one process should map their routes with `role:web`
   messages and hold their routers themselves; see
   [Options](../reference/options.md#seneca-web-messages-and-exports).
 * `auth` and `secure` in the route map are not implemented; use

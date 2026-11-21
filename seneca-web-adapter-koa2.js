@@ -9,13 +9,14 @@ module.exports = function koa(
   routes,
   done
 ) {
-  // seneca-web (2.2.2) calls the adapter from inside an action (init:web
-  // when the routes come from the plugin options), so `this` can be a
-  // delegate with fixed arguments, in particular fatal$:true during plugin
-  // initialization. Messages sent from it would inherit them and turn
-  // every action error into a fatal error that closes the process.
-  // Requests are therefore sent from the root instance, whichever
-  // instance seneca-web passes, and each one is its own transaction.
+  // seneca-web 2.2.2 and earlier called the adapter from inside an action
+  // (init:web when the routes come from the plugin options), so `this`
+  // could be a delegate with fixed arguments, in particular fatal$:true
+  // during plugin initialization. Messages sent from it would inherit
+  // them and turn every action error into a fatal error that closes the
+  // process. @seneca/web 3 passes a delegate of the root instance, but
+  // requests are still sent from the root instance itself, whichever
+  // instance the plugin passes, and each one is its own transaction.
   const seneca = this.root || this
 
   if (!context) {

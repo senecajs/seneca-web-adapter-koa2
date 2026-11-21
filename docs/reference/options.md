@@ -1,12 +1,12 @@
 # Options reference
 
 The adapter has no options of its own. It is configured through the
-options of [seneca-web](https://github.com/senecajs/seneca-web), which
+options of [@seneca/web](https://github.com/senecajs/seneca-web), which
 passes the relevant ones to the adapter, and through the route map.
-This page lists the seneca-web options the adapter reads, every route
-map property and what the adapter does with it, and the seneca-web
+This page lists the plugin options the adapter reads, every route
+map property and what the adapter does with it, and the plugin's
 messages and exports involved. The behaviour described here is that of
-seneca-web 2.2.2.
+`@seneca/web` 3.0.0.
 
 ```js
 seneca.use(SenecaWeb, {
@@ -40,7 +40,7 @@ that does not hold the router can write
 
 ## adapter
 
-The adapter function; set it to this module. seneca-web's default
+The adapter function; set it to this module. The plugin's default
 adapter only logs the routes.
 
 ## routes
@@ -53,7 +53,7 @@ message, see [seneca-web messages and exports](#seneca-web-messages-and-exports)
 ## middleware
 
 An object of named Koa middleware functions. Route sets and routes
-refer to them by name in their `middleware` properties. seneca-web
+refer to them by name in their `middleware` properties. The plugin
 stores it as `options.middleware`, which is where the adapter reads
 it. See [Add middleware per route](../how-to/add-route-middleware.md).
 
@@ -71,7 +71,7 @@ it for that mapping (including `middleware`).
 
 ## auth
 
-Passed by seneca-web to adapters that implement authentication (the
+Passed by the plugin to adapters that implement authentication (the
 Express adapter uses it for Passport). This adapter ignores it, and
 also ignores the `auth` and `secure` route properties. Use Koa
 middleware for authentication; see
@@ -120,7 +120,7 @@ Map values:
 | `autoreply` | `true` | `false` stops the adapter from writing the reply as the response body. See [Response](response.md#autoreply). |
 | `redirect` | none | A URL to redirect to after the action replied. See [Response](response.md#redirect). |
 | `middleware` | none | Middleware for this route only, appended after the set's middleware. |
-| `auth` | none | Ignored by this adapter (seneca-web keeps it only when it has a `strategy`). |
+| `auth` | none | Ignored by this adapter (the plugin keeps it only when it has a `strategy`). |
 | `secure` | none | Ignored by this adapter. |
 
 The path is `'/' + prefix + part + postfix + suffix`, joined as path
@@ -130,21 +130,21 @@ place of `*`.
 ## seneca-web messages and exports
 
 The adapter adds no action patterns and no exports. These belong to
-seneca-web and are how route mapping is triggered:
+`@seneca/web` and are how route mapping is triggered:
 
 | Pattern | Message properties | Effect |
 | ------- | ------------------ | ------ |
 | `role:web,routes:*` | `routes` (required), and optionally `adapter`, `context`, `options`, `auth` for this mapping only | Maps the routes by calling the adapter. Replies with the adapter's result, `{ routes }`. |
-| `role:web,set:server` | `context`, `adapter`, `options`, `auth` | Replaces the defaults (each property that is given) used by later mappings, and replies `{ ok: true }`. In seneca-web 2.2.2 a message that also carries `routes` is matched by `role:web,routes:*` instead: the routes are mapped onto the message's context, but the defaults are not replaced. |
+| `role:web,set:server` | `context`, `adapter`, `options`, `auth` | Replaces the defaults (each property that is given) used by later mappings, and replies `{ ok: true }`. A message that also carries `routes` (pattern `role:web,set:server,routes:*`) stores the new defaults and then maps the routes. In seneca-web 2.2.2 and earlier such a message was matched by `role:web,routes:*` instead, and the defaults were not replaced. |
 | `init:web` | | Plugin initialization: runs the `set:server` logic with the plugin options, which maps the `routes` option. |
 
 | Export | Value |
 | ------ | ----- |
 | `seneca.export('web/context')` | A function returning the current context (the router). |
-| `seneca.export('web/mapRoutes')` | The mapping function, bound to the plugin instance. |
-| `seneca.export('web/setServer')` | The `set:server` function, bound to the plugin instance. |
+| `seneca.export('web/mapRoutes')` | The mapping function, bound to a delegate of the root instance (seneca-web 2.2.2 and earlier: to the plugin instance). |
+| `seneca.export('web/setServer')` | The `set:server` function, bound to the same delegate. |
 
-seneca-web keeps its options, and the current context, adapter and
+`@seneca/web` keeps its options, and the current context, adapter and
 options used for mapping, in module level variables, shared by every
 Seneca instance in the process:
 
@@ -154,7 +154,7 @@ Seneca instance in the process:
   options, so an instance created later in the same process also maps
   the `routes` given to an earlier one, onto its own context.
 
-Programs with more than one Seneca instance using seneca-web (tests,
+Programs with more than one Seneca instance using `@seneca/web` (tests,
 for example) should pass `routes` in `role:web` messages rather than in
 the plugin options, hold their routers themselves, and map with an
 explicit `context` where it matters.

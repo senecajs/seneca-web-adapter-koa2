@@ -89,14 +89,15 @@ middleware that wraps `await next()` in `try`/`catch`; without one,
 Koa's default handler answers `500 Internal Server Error` as plain text
 and emits the application's `error` event with the error.
 
-What the error object looks like depends on the Seneca version:
+The error object is the one the action produced. Seneca 3 wrapped it;
+the table shows the difference for handlers written for Seneca 3:
 
 | | Seneca 4 | Seneca 3 (default `legacy.error: true`) |
 | --- | -------- | ---------------------------------------- |
 | Action replied with or threw an `Error` | the same object: `message`, `code`, `details` as the action set them | a wrapper: `message` is `seneca: Action <pattern> failed: <message>.`, `code` is `act_execute`, the action's error is `err.orig` |
 | Seneca's own errors (`act_not_found`, `result_not_objarr`, `action_timeout`, codes from `this.error`) | an error with that `code` and `details`; no `orig` | the same |
 
-Reading `err.orig || err` works on both versions. See
+Read the message, code and details from `err`. See
 [Handle errors and status codes](../how-to/handle-errors-and-status-codes.md).
 
 Body parser errors (co-body) are thrown before the message is sent and

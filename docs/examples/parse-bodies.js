@@ -1,6 +1,6 @@
 // How-to: Parse request bodies. Run with: node docs/examples/parse-bodies.js
 const Seneca = require('seneca')
-const SenecaWeb = require('seneca-web')
+const SenecaWeb = require('@seneca/web')
 const Koa = require('koa')
 const Router = require('@koa/router')
 const CoBody = require('co-body')
@@ -34,7 +34,7 @@ async function main() {
         map: { body: { POST: true, PATCH: true } }
       }
     })
-    await ready(seneca)
+    await seneca.ready()
 
     // Your own parser: parseBody:false makes the adapter use
     // ctx.request.body, which middleware before the handler must fill.
@@ -105,12 +105,6 @@ async function main() {
     if (server) server.close()
     await new Promise(resolve => seneca.close(resolve))
   }
-}
-
-function ready(seneca) {
-  return new Promise((resolve, reject) =>
-    seneca.ready(err => (err ? reject(err) : resolve()))
-  )
 }
 
 main().catch(err => {

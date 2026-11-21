@@ -89,7 +89,7 @@ by the handler after the action replies; see
 [Response](response.md#status-and-content-type).
 
 Seneca treats properties whose names end in `$` as directives rather
-than message data. seneca-transport removes them (with
+than message data. `@seneca/transport` removes them (with
 `seneca.util.clean`) before it sends a message to another process, so
 an action running remotely sees `args` but no `request$` or
 `response$`. The Koa objects are also not serializable: do not log the
