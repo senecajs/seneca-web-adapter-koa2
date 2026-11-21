@@ -55,7 +55,7 @@ accepts HTML and `text/plain` otherwise.
 | any | sets a header with `msg.response$.set()` | the header is sent |
 | any | replies with an error, or throws | the error is thrown to Koa, see [Errors](#errors) |
 
-Output of the example program (Seneca 4.0.0-rc5):
+Output of the example program (Seneca 4.0.0):
 
 ```
 POST /login -> 302 {

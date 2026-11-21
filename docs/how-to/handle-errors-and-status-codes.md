@@ -87,15 +87,15 @@ false`); see [Response](../reference/response.md).
 
 The example maps `item` (replies with errors coded `invalid` and
 `not_found`), `crash` (throws) and `missing` (no action exists). Seneca
-4.0.0-rc5 output:
+4.0.0 output:
 
 ```
-seneca 4.0.0-rc5
+seneca 4.0.0
 GET /shop/item/1 -> 200 { id: '1', name: 'kiwi' }
 GET /shop/item/2 -> 404 { error: 'no item 2', code: 'not_found' }
 GET /shop/item/x -> 400 { error: 'id must be a number', code: 'invalid' }
 GET /shop/missing -> 404 {
-  error: "seneca: No matching action pattern found for {  args: { body: {}, query: {}, params: {}, state: {} },  role: 'shop',  cmd: 'missing'}, and no default result provided (using a default$ property).",
+  error: 'seneca: No matching action pattern found for cmd:missing,role:shop (other keys: args), and no default result provided (using a default$ property).',
   code: 'act_not_found'
 }
 GET /shop/crash -> 500 { error: 'internal error', code: null }

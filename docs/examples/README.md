@@ -23,5 +23,5 @@ as development dependencies):
 node docs/examples/getting-started.js
 ```
 
-The outputs shown in the documents were produced with Node.js 24 and
-Seneca 4.0.0-rc5.
+The outputs shown in the documents were produced with Node.js 26,
+Seneca 4.0.0 and `@seneca/web` 3.0.0.
