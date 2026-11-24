@@ -15,13 +15,13 @@ instance. They require the adapter from this repository
 | `handle-errors.js` | [Handle errors and status codes](../how-to/handle-errors-and-status-codes.md) |
 | `redirect-and-autoreply.js` | [Response](../reference/response.md) |
 
-Run an example from the repository root with Node.js 22 or later, after
-`npm install` (which provides seneca, seneca-web, koa and @koa/router as
-development dependencies):
+Run an example from the repository root with Node.js 24 or later, after
+`npm install` (which provides seneca, @seneca/web, koa and @koa/router
+as development dependencies):
 
 ```sh
 node docs/examples/getting-started.js
 ```
 
-The outputs shown in the documents were produced with Node.js 24 and
-Seneca 4.0.0-rc5.
+The outputs shown in the documents were produced with Node.js 26,
+Seneca 4.0.0 and `@seneca/web` 3.0.0.

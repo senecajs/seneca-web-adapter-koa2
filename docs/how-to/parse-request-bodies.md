@@ -51,7 +51,7 @@ Set `parseBody: false` to make the adapter skip co-body and use
 handler must then set `ctx.request.body`: any Koa body parser that does
 so works, and so does co-body called with your own options.
 
-For all routes, pass the option to seneca-web:
+For all routes, pass the option to `@seneca/web`:
 
 ```js
 seneca.use(SenecaWeb, {

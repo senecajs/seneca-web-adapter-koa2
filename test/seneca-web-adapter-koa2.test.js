@@ -2,14 +2,14 @@
 
 const Assert = require('assert')
 const Seneca = require('seneca')
-const Web = require('seneca-web')
+const Web = require('@seneca/web')
 const Koa = require('koa')
 const Router = require('@koa/router')
 const Adapter = require('../seneca-web-adapter-koa2')
 const Parse = require('co-body')
 
-// Promise wrapper around seneca.act, so the tests also run on Seneca 3,
-// which has no seneca.post without seneca-promisify.
+// Promise wrapper around seneca.act: the act callback carries the
+// action's error unchanged.
 function act(si, pattern, msg) {
   return new Promise((resolve, reject) =>
     si.act(pattern, msg, (err, res) => (err ? reject(err) : resolve(res)))
@@ -275,10 +275,9 @@ describe('koa', () => {
       try {
         await next()
       } catch (err) {
-        // Seneca 3 wraps action errors (the original is err.orig);
-        // Seneca 4 passes the original error through unchanged.
+        // Seneca 4 passes the action's error through unchanged.
         ctx.status = 400
-        ctx.body = (err.orig || err).message
+        ctx.body = err.message
       }
     })
 
@@ -367,7 +366,7 @@ describe('koa', () => {
       } catch (err) {
         caught = err
         ctx.status = 400
-        ctx.body = { code: (err.orig || err).code }
+        ctx.body = { code: err.code }
       }
     })
 
@@ -383,8 +382,8 @@ describe('koa', () => {
     Assert.equal(res.status, 400)
     Assert.deepEqual(await res.json(), { code: 'snap' })
 
-    // Seneca 4 delivers the original error; Seneca 3 wraps it as err.orig.
-    Assert.ok(caught === original || caught.orig === original)
+    // Seneca 4 delivers the original error.
+    Assert.strictEqual(caught, original)
   })
 
   it('does not make action errors fatal for routes mapped by the plugin instance', async () => {
@@ -405,7 +404,7 @@ describe('koa', () => {
         await next()
       } catch (err) {
         ctx.status = 400
-        ctx.body = (err.orig || err).message
+        ctx.body = err.message
       }
     })
 
@@ -422,11 +421,13 @@ describe('koa', () => {
       si2.ready(err => (err ? reject(err) : resolve()))
     )
 
-    // seneca-web 2.2.2 maps routes given as plugin options from the
+    // seneca-web 2.2.2 mapped routes given as plugin options from the
     // plugin instance (init:web), whose messages carry fatal$:true, and
-    // binds the exported mapRoutes function to that same instance. Using
-    // the export reproduces that case while leaving the module level
-    // route configuration of seneca-web untouched for the other tests.
+    // bound the exported mapRoutes function to that same instance.
+    // @seneca/web 3 binds it to a delegate of the root instance. Using
+    // the export maps the routes as the plugin options would, while
+    // leaving the module level route configuration of the plugin
+    // untouched for the other tests.
     await new Promise((resolve, reject) =>
       si2.export('web/mapRoutes')(
         {

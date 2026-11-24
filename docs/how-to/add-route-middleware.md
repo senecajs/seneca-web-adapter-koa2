@@ -8,7 +8,7 @@ attached to routes through the route map. The program used here is
 
 ## 1. Name your middleware
 
-Give seneca-web an object of named middleware functions with the
+Give `@seneca/web` an object of named middleware functions with the
 `middleware` option. Each one is an ordinary Koa middleware:
 
 ```js

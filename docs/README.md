@@ -2,13 +2,14 @@
 
 The documentation follows the [Diátaxis](https://diataxis.fr/) structure:
 four sections with four different jobs. Start with the tutorial if you
-are new to seneca-web; use the how-to guides for specific tasks; look
+are new to `@seneca/web`; use the how-to guides for specific tasks; look
 things up in the reference; read the explanations to understand the
 design.
 
 This adapter is small: it registers routes on a Koa router and turns
 requests into Seneca messages. The route map itself, and the `role:web`
-messages that load it, belong to [seneca-web](https://github.com/senecajs/seneca-web).
+messages that load it, belong to [@seneca/web](https://github.com/senecajs/seneca-web)
+(published as `seneca-web` up to 2.2.2).
 Seneca itself is documented at [senecajs.org](https://senecajs.org).
 
 ## Tutorials
@@ -32,7 +33,7 @@ Task oriented recipes for people who already know the basics.
 | [Parse request bodies](how-to/parse-request-bodies.md) | What co-body parses by default, parser errors, your own parser with `parseBody: false`, size limits, PATCH and DELETE bodies. |
 | [Add middleware per route](how-to/add-route-middleware.md) | Named and inline Koa middleware, order, ending a request early, running code after the action. |
 | [Pass Koa state to actions](how-to/pass-koa-state-to-actions.md) | `ctx.state` to `msg.args.state`, what is copied, passing data back to middleware. |
-| [Handle errors and status codes](how-to/handle-errors-and-status-codes.md) | Error middleware that works on Seneca 3 and 4, mapping error codes to statuses, status codes and headers on success. |
+| [Handle errors and status codes](how-to/handle-errors-and-status-codes.md) | Error middleware for Seneca 4, mapping error codes to statuses, status codes and headers on success. |
 | [Migrate from Seneca 3](how-to/migrate-from-seneca-3.md) | What to change in an application that uses this adapter when moving to Seneca 4. |
 
 ## Reference
@@ -84,7 +85,7 @@ patterns, exports, error codes or command line flags of its own.
 | Status 200 and `application/json` | response behaviour | [Response](reference/response.md#status-and-content-type) |
 | Action errors handed to Koa | response behaviour | [Response](reference/response.md#errors), [Handle errors and status codes](how-to/handle-errors-and-status-codes.md) |
 | Body parser errors: status 400, 413, 415 | behaviour | [Parse request bodies](how-to/parse-request-bodies.md#1-handle-parser-errors), [Response](reference/response.md#errors) |
-| Request messages sent from the root instance, so action errors are not fatal | behaviour, since 1.3.0 | [Seneca 3 and Seneca 4](explanation/seneca-3-and-4.md#fatal-errors-and-the-root-instance), [Message](reference/message.md) |
+| Request messages sent from the root instance, so action errors are not fatal | behaviour, since 2.0.0 | [Seneca 3 and Seneca 4](explanation/seneca-3-and-4.md#fatal-errors-and-the-root-instance), [Message](reference/message.md) |
 | Reply of `role:web,routes:*`: `{ routes }` | adapter reply | [Adapter](reference/adapter.md#reply) |
 | Error `no context provided` | error | [Adapter](reference/adapter.md#failure-modes) |
 | Unknown middleware name, missing `middleware` option, Koa application as `context` | errors | [Adapter](reference/adapter.md#failure-modes) |

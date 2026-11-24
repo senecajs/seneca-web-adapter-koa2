@@ -1,27 +1,26 @@
 # Getting started
 
 In this tutorial you build a small todo service: three Seneca actions,
-made available over HTTP through Koa, seneca-web and this adapter. You
+made available over HTTP through Koa, `@seneca/web` and this adapter. You
 then call it with `fetch`. It takes about fifteen minutes. The finished
 program is [docs/examples/getting-started.js](../examples/getting-started.js).
 
 ## 1. Install
 
-You need Node.js 22 or later (the versions this was tested with are
-22 and 24). In a new directory:
+You need Node.js 24 or later. In a new directory:
 
 ```sh
 npm init -y
-npm install seneca@^4.0.0-rc5 seneca-web @seneca/web-adapter-koa2 koa @koa/router
+npm install seneca@^4 @seneca/web @seneca/web-adapter-koa2 koa @koa/router
 ```
 
-`seneca@^4.0.0-rc5` selects the Seneca 4 prerelease; plain `seneca`
-installs the current Seneca 3 release, which runs this tutorial
-unchanged. Versions of the adapter up to 1.2.1 were published as
-`seneca-web-adapter-koa2`; from 1.3.0 the package is
-`@seneca/web-adapter-koa2`.
+Name the Seneca version: until Seneca 4 is the default on npm, a bare
+`npm install seneca` installs Seneca 3, which this version of the
+adapter does not support. Versions of the adapter up to 1.2.1 were
+published as `seneca-web-adapter-koa2`, and versions of `@seneca/web`
+up to 2.2.2 as `seneca-web`.
 
-`seneca`, `seneca-web` and `koa` are peer dependencies of the adapter,
+`seneca`, `@seneca/web` and `koa` are peer dependencies of the adapter,
 so they are installed next to it. `@koa/router` provides the router the
 adapter registers its routes on.
 
@@ -32,7 +31,7 @@ are explained below.
 
 ```js
 const Seneca = require('seneca')
-const SenecaWeb = require('seneca-web')
+const SenecaWeb = require('@seneca/web')
 const Koa = require('koa')
 const Router = require('@koa/router')
 const Adapter = require('@seneca/web-adapter-koa2')
@@ -74,7 +73,7 @@ async function main() {
     // The adapter registers the routes on this router.
     const router = new Router()
     seneca.use(SenecaWeb, { adapter: Adapter, context: router, routes })
-    await ready(seneca)
+    await seneca.ready()
 
     const app = new Koa()
     app.use(router.routes())
@@ -105,13 +104,6 @@ async function main() {
     if (server) server.close()
     await new Promise(resolve => seneca.close(resolve))
   }
-}
-
-// Callback form of ready: it also works on Seneca 3 and on 4.0.0-rc5.
-function ready(seneca) {
-  return new Promise((resolve, reject) =>
-    seneca.ready(err => (err ? reject(err) : resolve()))
-  )
 }
 
 main().catch(err => {
@@ -154,11 +146,11 @@ is the pattern with a wildcard; each key of `map` replaces the `*`, so
 with `prefix: '/todo'`, `list` is served at `/todo/list`. The value says
 which HTTP methods to accept (`GET: true`, `POST: true`), and `suffix:
 '/:id'` adds a path parameter to `/todo/get`. The route map is a
-seneca-web feature; the [Options reference](../reference/options.md#route-map)
+`@seneca/web` feature; the [Options reference](../reference/options.md#route-map)
 lists every property.
 
-**The adapter** is handed to seneca-web as the `adapter` option, and
-the router as the `context`. When seneca-web initializes, it turns the
+**The adapter** is handed to `@seneca/web` as the `adapter` option, and
+the router as the `context`. When the plugin initializes, it turns the
 route map into a list of routes and calls the adapter, which registers
 each one on the router:
 
@@ -168,10 +160,8 @@ POST /todo/add       -> role:todo,cmd:add
 GET  /todo/get/:id   -> role:todo,cmd:get
 ```
 
-`await ready(seneca)` waits for that initialization. It uses the
-callback form of `seneca.ready` because the promise form hangs on
-Seneca 4.0.0-rc5 when the instance is already idle, and does not exist
-on Seneca 3 without seneca-promisify.
+`await seneca.ready()` waits for that initialization; Seneca 4 has the
+promise form built in.
 
 **A request** such as `POST /todo/add` reaches the route handler the
 adapter registered. The handler parses the JSON body (POST and PUT

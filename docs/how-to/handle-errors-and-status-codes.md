@@ -1,7 +1,7 @@
 # Handle errors and status codes
 
-How to turn action errors into HTTP responses, on Seneca 3 and Seneca
-4, and how to answer with status codes and headers of your choice. The
+How to turn action errors into HTTP responses on Seneca 4, and how to
+answer with status codes and headers of your choice. The
 program used here is [docs/examples/handle-errors.js](../examples/handle-errors.js).
 
 ## 1. Add error middleware before the routes
@@ -19,13 +19,11 @@ app.use(async (ctx, next) => {
   try {
     await next()
   } catch (err) {
-    // Seneca 3 wraps action errors (the original is err.orig);
-    // Seneca 4 delivers the original error object.
-    const cause = err.orig || err
-    ctx.status = STATUS[cause.code] || 500
+    // Seneca 4 delivers the action's error object unchanged.
+    ctx.status = STATUS[err.code] || 500
     ctx.body = {
-      error: 500 === ctx.status ? 'internal error' : cause.message,
-      code: cause.code || null
+      error: 500 === ctx.status ? 'internal error' : err.message,
+      code: err.code || null
     }
   }
 })
@@ -38,14 +36,13 @@ app.use(router.routes())
 The error is the one the `seneca.act` callback received, unchanged.
 
 On Seneca 4 that is the error object the action produced: its
-`message`, `code` and `details` are whatever the action set. On
-Seneca 3 (with the default `legacy.error: true`) it is a wrapper:
-`message` is `seneca: Action <pattern> failed: <message>.`, `code` is
-`act_execute`, and the action's error is `err.orig`. Reading
-`err.orig || err` works on both.
+`message`, `code` and `details` are whatever the action set. Seneca 3
+(with the default `legacy.error: true`) wrapped it: `message` was
+`seneca: Action <pattern> failed: <message>.`, `code` was
+`act_execute`, and the action's error was `err.orig`. Error middleware
+written for Seneca 3 that reads `err.orig` reads `err` on Seneca 4.
 
-Errors raised by Seneca itself arrive without a wrapper on both
-versions, as errors with a `code`:
+Errors raised by Seneca itself arrive as errors with a `code`:
 
 | Situation | `code` |
 | --------- | ------ |
@@ -90,15 +87,15 @@ false`); see [Response](../reference/response.md).
 
 The example maps `item` (replies with errors coded `invalid` and
 `not_found`), `crash` (throws) and `missing` (no action exists). Seneca
-4.0.0-rc5 output:
+4.0.0 output:
 
 ```
-seneca 4.0.0-rc5
+seneca 4.0.0
 GET /shop/item/1 -> 200 { id: '1', name: 'kiwi' }
 GET /shop/item/2 -> 404 { error: 'no item 2', code: 'not_found' }
 GET /shop/item/x -> 400 { error: 'id must be a number', code: 'invalid' }
 GET /shop/missing -> 404 {
-  error: "seneca: No matching action pattern found for {  args: { body: {}, query: {}, params: {}, state: {} },  role: 'shop',  cmd: 'missing'}, and no default result provided (using a default$ property).",
+  error: 'seneca: No matching action pattern found for cmd:missing,role:shop (other keys: args), and no default result provided (using a default$ property).',
   code: 'act_not_found'
 }
 GET /shop/crash -> 500 { error: 'internal error', code: null }
@@ -106,7 +103,6 @@ GET /shop/item/1 -> 200 { id: '1', name: 'kiwi' }
 ```
 
 The last request shows that the service keeps running after the
-failures. Before version 1.3.0 of this adapter that was not the case
+failures. Before version 2.0.0 of this adapter that was not the case
 for routes configured through the plugin options: an action error
-closed the Seneca instance and, on Seneca 3 and Seneca 4.0.0, exited
-the process. See [Seneca 3 and Seneca 4](../explanation/seneca-3-and-4.md#fatal-errors-and-the-root-instance).
+closed the Seneca instance and exited the process. See [Seneca 3 and Seneca 4](../explanation/seneca-3-and-4.md#fatal-errors-and-the-root-instance).
